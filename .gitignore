@@ -1,0 +1,23 @@
+# C++ 編譯產生的中間檔
+*.o
+*.obj
+
+# 函式庫檔案
+*.a
+*.so
+*.dylib
+*.dll
+
+# 執行檔 (Linux/Mac 常見無副檔名，Windows 為 .exe)
+*.exe
+*.out
+
+# 配置腳本產生的暫存檔 (因為 CRF++ 通常用 ./configure 編譯)
+config.log
+config.status
+autom4te.cache/
+Makefile
+libtool
+
+# 系統檔案
+.DS_Store
