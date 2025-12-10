@@ -5,29 +5,34 @@
 # the SWIG interface file instead.
 
 
-
 from sys import version_info
-if version_info >= (2,6,0):
-    def swig_import_helper():
-        from os.path import dirname
-        import imp
-        fp = None
+import importlib.util
+from os.path import dirname, join
+
+def swig_import_helper():
+    try:
+        # 嘗試直接導入模組
+        import _CRFPP
+        return _CRFPP
+    except ImportError:
+        # 使用 importlib 來導入模組
+        module_name = '_CRFPP'
+        module_path = join(dirname(__file__), '_CRFPP.cpython-312-x86_64-linux-gnu.so')  # 假設 .so 文件在相同目錄下
+        spec = importlib.util.spec_from_file_location(module_name, module_path)
+        _mod = importlib.util.module_from_spec(spec)
         try:
-            fp, pathname, description = imp.find_module('_CRFPP', [dirname(__file__)])
-        except ImportError:
-            import _CRFPP
-            return _CRFPP
-        if fp is not None:
-            try:
-                _mod = imp.load_module('_CRFPP', fp, pathname, description)
-            finally:
-                fp.close()
-            return _mod
+            spec.loader.exec_module(_mod)
+        except FileNotFoundError:
+            raise ImportError(f"Cannot find module '{module_name}' at '{module_path}'")
+        return _mod
+
+if version_info >= (2,6,0):
     _CRFPP = swig_import_helper()
     del swig_import_helper
 else:
     import _CRFPP
 del version_info
+
 try:
     _swig_property = property
 except NameError:
